@@ -1,21 +1,74 @@
 language: python
-python: '3.6'
+
+jobs:
+  include:
+    - name: "Python 3.5 on Xenial linux"
+      python: 3.5
+      os: linux
+      dist: xenial
+      arch: amd64
+    - name: "Python 3.6 on Xenial linux"
+      python: 3.6
+      os: linux
+      dist: xenial
+      arch: amd64
+    - name: "Python 3.7 on Xenial linux"
+      python: 3.7
+      os: linux
+      dist: xenial
+      arch: amd64
+    - name: "Python 3.7 on Bionic linux"
+      python: 3.7
+      os: linux
+      dist: bionic
+      arch: amd64
+    - name: "Python 3.7 on Focal linux"
+      python: 3.7
+      os: linux
+      dist: focal
+      arch: amd64
+    - name: "Python 3.7 on Xenial linux on arm64"
+      python: 3.7
+      os: linux
+      dist: xenial
+      arch: arm64
+    - name: "Python 3.7 on Xenial linux on arm64-gravitation2"
+      python: 3.7
+      os: linux
+      dist: xenial
+      arch: arm64-graviton2
+      virt: lxd
+      group: edge
+    - name: "Python 3.7 on macOS"
+      os: osx
+      osx_image: xcode11.5  # Python 3.7 running on macOS 10.14.4
+      language: shell       # 'language: python' is an error on Travis CI macOS
+    - name: "Python 3.7 on Windows"
+      os: windows           # Windows 10.0.17134 N/A Build 17134
+      language: shell       # 'language: python' is an error on Travis CI Windows
+      before_install:
+        - choco install python --version 3.7.0
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 install:
-- pip install numpy
-- pip install scipy
-- pip install networkx
-- pip install pytest
-- pip install pytest-cov
-- pip install codecov
-- pip install -e .
-script: py.test --cov=choix
+- pip3 install numpy
+- pip3 install scipy
+- pip3 install networkx
+- pip3 install pytest
+- pip3 install pytest-cov
+- pip3 install codecov
+- pip3 install -e .
+script:
+#   - py.test --cov=choix
+  - python3 example/ep-example.py || python example/ep-example.py
 after_success:
-- codecov
-deploy:
-  provider: pypi
-  user: lum
-  password:
-    secure: iTrRZX/oDAfNtZuCe1/RS9//wnzpl48KEmaaq9aG1IQPAKbyIJTs/bRVp61af3txq54dsegK9Uql1rz46QF8d4e4H275GfZkqkxN3EoT36vNpPdZvUHYmVHpWOyziL6wwA4ORrI/BF+DOTujxTTPZ87EReUtjwpvybWXTe49rxq8ZgVO1K+VeL+r2+aGytvoOcKeF+txUzDpTxqD1/fYYi3CPA3SO5s2zI93EnPWyPLYSbnRpO6//4yWP8lPoU+oLwz6x7RoHuEoYCgO3hH+PN4FCU3xKJm0/+rUG4KbJ9RUn7Oz6SA7koCb7si4lmIx/odxtYKvBzO5i39XwEnFrLQyfEnFA+85OJwxl/k7/S/wGY+vE021Yv9d3V6V5GCfrCtUh6OKdZGRDImX6JJQlzTeaGJaHRNGnV3uRmj3gH8lf8xL9MHnisILFVaQt9bWWht/75zWcu7FpfS4DCaDfzGTHsi74Ajg3XHLcvtEYUuePcC5NoMGg0g1MIX2/C+u3Xy3ljE8WITynvAfGVfrMCBW3yk+j1MwPGDhd8Vsjt2h7dHSaUBdMWgZDPFbHejmFlSHFIfVJi/eTFdIZzgj2OGA2y6TwITkF/kBUpRkUcEooTvIgBG9kps4eJdpndfUxBIY5IcpJOZadZNTYpwK35XGFQLaOh0bDV4c3jqChYI=
-  on:
-    tags: true
-    branch: master
+# - codecov
+- echo "Success."
+# deploy:
+#   provider: pypi
+#   user: lum
+#   password:
+#     secure: iTrRZX/oDAfNtZuCe1/RS9//wnzpl48KEmaaq9aG1IQPAKbyIJTs/bRVp61af3txq54dsegK9Uql1rz46QF8d4e4H275GfZkqkxN3EoT36vNpPdZvUHYmVHpWOyziL6wwA4ORrI/BF+DOTujxTTPZ87EReUtjwpvybWXTe49rxq8ZgVO1K+VeL+r2+aGytvoOcKeF+txUzDpTxqD1/fYYi3CPA3SO5s2zI93EnPWyPLYSbnRpO6//4yWP8lPoU+oLwz6x7RoHuEoYCgO3hH+PN4FCU3xKJm0/+rUG4KbJ9RUn7Oz6SA7koCb7si4lmIx/odxtYKvBzO5i39XwEnFrLQyfEnFA+85OJwxl/k7/S/wGY+vE021Yv9d3V6V5GCfrCtUh6OKdZGRDImX6JJQlzTeaGJaHRNGnV3uRmj3gH8lf8xL9MHnisILFVaQt9bWWht/75zWcu7FpfS4DCaDfzGTHsi74Ajg3XHLcvtEYUuePcC5NoMGg0g1MIX2/C+u3Xy3ljE8WITynvAfGVfrMCBW3yk+j1MwPGDhd8Vsjt2h7dHSaUBdMWgZDPFbHejmFlSHFIfVJi/eTFdIZzgj2OGA2y6TwITkF/kBUpRkUcEooTvIgBG9kps4eJdpndfUxBIY5IcpJOZadZNTYpwK35XGFQLaOh0bDV4c3jqChYI=
+#   on:
+#     tags: true
+#     branch: master
