@@ -24,3 +24,5 @@ print(probit_mean)
 print("\nProbit covariance:")
 print(probit_cov)
 print("\ntotal Probit variance: {:3f}".format(np.trace(probit_cov)))
+
+print(f"\n\n\nScore: {np.trace(probit_cov)}\n\n\n")
